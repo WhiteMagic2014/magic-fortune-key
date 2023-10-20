@@ -1,0 +1,75 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>喵喵财富密码</title>
+    <meta charset="utf-8">
+    <!-- Add this meta tag to make your webpage responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="css/hui/H-ui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/hui/H-ui.admin.css"/>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+
+        label {
+            display: block;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        button {
+            display: block;
+            width: 100px;
+            height: 35px;
+            margin-top: 20px;
+            background-color: #FF4500;
+            color: #FFD700;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        button:hover {
+            background-color: #FF4500;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <label for="pwd">请输入财富密码:</label>
+    <textarea id="pwd" rows="10"></textarea>
+</div>
+<button id="trans" onclick="trans()">好运来</button>
+<textarea id="result" rows="7" cols="60"></textarea>
+<script src="jquery/jquery-2.1.1.min.js"></script>
+<script src="common.util.js"></script>
+<script th:inline="javascript">
+    function trans() {
+        var param = {};
+        param.cafumima = $("#pwd").val();
+        $.ajax({
+            data: param,
+            type: "POST",
+            url: getApiPath() + '/trans',
+            success: function (data) {
+                $("#result").text(data);
+            }
+        });
+    }
+</script>
+</body>
+</html>
