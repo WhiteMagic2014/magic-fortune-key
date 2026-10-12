@@ -246,7 +246,7 @@
     </div>
 </div>
 
-<script src="jquery/jquery-3.7.1.min.js"></script>
+<script src="jquery/jquery-2.1.1.min.js"></script>
 <script src="common.util.js"></script>
 <script th:inline="javascript">
     // 奖池为 0 ~ 15，下标即接口返回的 id，图片放在 static/img/ 下
@@ -309,7 +309,7 @@
             } else {
                 $item.append('<div class="ph">' + name + '</div>');
             }
-            $item.append('<div class="idx">' + name + ' <span class="nid">#' + id + '</span></div>');
+            $item.append('<div class="idx">' + name + ' <span class="nid">#' + (id+1) + '</span></div>');
             $grid.append($item);
         });
         $("#resultCard").show();
