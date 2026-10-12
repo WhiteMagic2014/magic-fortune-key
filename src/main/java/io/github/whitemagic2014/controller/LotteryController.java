@@ -17,6 +17,26 @@ import java.util.List;
 public class LotteryController {
 
 
+    @GetMapping("/wzwxq")
+    public ModelAndView wzwxq() {
+        ModelAndView mv = new ModelAndView("wzwxq");
+        return mv;
+    }
+
+
+    @RequestMapping("/wzwxqLottery")
+    @ResponseBody
+    public List<Integer> wzwxqLottery(String cafumima) {
+
+        List<Integer> pool = new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
+            pool.add(i);
+        }
+        List<Integer> lottery = LotteryUtil.magicLottery(pool, 6, false, cafumima);
+        return lottery;
+    }
+
+
     @GetMapping("")
     public ModelAndView index() {
         ModelAndView mv = new ModelAndView("index");

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        canvas {
+            border: 1px solid #000;
+            position: absolute;
+            top: 0px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .tools_bar {
+            /* height: 400px; */
+            border: 1px solid #000;
+            float: left;
+            text-align: left;
+            line-height: 40px;
+        }
+
+        .rubber_view {
+            width: 600px;
+            height: 600px;
+            position: absolute;
+            top: 0px;
+            left: 50%;
+            transform: translateX(-50%);
+            overflow: hidden;
+        }
+
+        .rubber_pic {
+            background: #fff;
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            z-index: 2;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+<div class="tools_bar">
+    背景色： <input type="color" class="bg_color" value="#ffffff"><br> 主题色: <input type="color" class="color"><br> 线条粗细:
+    <select class="border_width">
+        <option value="1">1px</option>
+        <option value="5">5px</option>
+        <option value="10">10px</option>
+        <option value="15">15px</option>
+    </select><br> 功能：
+    <button class="pen">画笔</button>
+    <button class="square">矩形框</button>
+    <button class="rubber">橡皮擦</button>
+    <button class="clear_all">清空画布</button>
+</div>
+<!-- <div class="rubber_view">
+    <div class="rubber_pic">
+
+    </div>
+</div> -->
+<div class="rubber_pic">
+
+</div>
+<canvas width="600" height="600"></canvas>
+</body>
+<script>
+    var cas = document.querySelector("canvas");
+    var ctx = cas.getContext("2d");
+    var bg_color = document.querySelector(".bg_color")
+    var color = document.querySelector(".color");
+    var border_width = document.querySelector(".border_width");
+    var tools = document.querySelectorAll("button");
+    var rubber_view = document.querySelector(".rubber_view");
+    var rubber_pic = document.querySelector(".rubber_pic");
+    var start_pos_x = 0;
+    var start_pos_y = 0;
+    //设置一个开关
+    var flag = false;
+    //配置全局对象
+    var global_obj = {
+        border_width: 1,
+        color: "#000",
+        tools: "pen",
+    };
+    // console.log(tools);
+    //给每个功能注册事件，选择功能
+    for (var i = 0; i < tools.length; i++) {
+        tools[i].onclick = function() {
+            //每次点击完一个功能都用before_tool 存储起来
+            var before_tool = global_obj.tools;
+            global_obj.tools = this.className;
+            // console.log(this.className);
+            //如果选择清空画布，则直接清空整个画布
+            if (global_obj.tools == "clear_all") {
+                ctx.clearRect(0, 0, cas.width, cas.height);
+                //清空完后，让功能变回清空前的功能
+                global_obj.tools = before_tool;
+                ctx.fillStyle = bg_color.value;
+                ctx.fillRect(0, 0, cas.width, cas.height);
+            }
+        }
+    }
+    //设置背景颜色
+    bg_color.addEventListener("change", function() {
+        ctx.fillStyle = bg_color.value;
+        ctx.fillRect(0, 0, cas.width, cas.height);
+    });
+    //设置主题色
+    color.addEventListener("change", function() {
+        global_obj.color = color.value;
+        // console.log(global_obj.color);
+    });
+    //设置粗细
+    border_width.addEventListener("change", function() {
+        global_obj.border_width = border_width.value;
+        // console.log(global_obj.border_width);
+    });
+
+    //把配置对象的属性赋值到画布中
+    cas.addEventListener("mousedown", function(e) {
+        flag = true;
+        ctx.beginPath();
+        ctx.strokeStyle = global_obj.color;
+        // console.log(ctx.strokeStyle);
+        ctx.lineWidth = global_obj.border_width;
+        //使用边框需要用到起始坐标
+        start_pos_x = e.offsetX;
+        start_pos_y = e.offsetY;
+
+        if (global_obj.tools == "rubber") {
+            ctx.clearRect(e.offsetX, e.offsetY, 20, 20);
+        }
+
+    });
+    cas.addEventListener("mousemove", function(e) {
+        // if (global_obj.tools == "rubber") {
+        //     rubber_pic.style.display = "block";
+        //     rubber_pic.style.left = e.pageX + "px";
+        //     rubber_pic.style.top = e.pageY + "px";
+        //     // console.log(rubber_pic.style.left);
+        // }
+        if (!flag) {
+            return;
+        }
+        var m_x = e.offsetX;
+        var m_y = e.offsetY;
+        if (global_obj.tools == "pen") { //当是笔的功能时
+            ctx.lineTo(m_x, m_y);
+            ctx.stroke();
+        } else if (global_obj.tools == "rubber") {
+            // rubber_pic.style.display = "none";
+            ctx.clearRect(m_x, m_y, 20, 20);
+        }
+    });
+    cas.addEventListener("mouseup", function(e) {
+        if (global_obj.tools == "square") {
+            var m_x = e.offsetX;
+            var m_y = e.offsetY;
+            var square_w = m_x - start_pos_x;
+            var square_h = m_y - start_pos_y;
+            ctx.strokeRect(start_pos_x, start_pos_y, square_w, square_h);
+        }
+        flag = false;
+    });
+</script>
+
+</html>
